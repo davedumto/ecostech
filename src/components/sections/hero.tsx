@@ -1,22 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { heroCopy } from "@/lib/content";
 
-function useViewportSize() {
+// Measures the actual rendered box of the given element rather than
+// window.innerWidth/innerHeight — those can be a frame stale relative to
+// what's really on screen (scrollbar appearing, hydration timing, zoom),
+// which left a visible gap between the "full-bleed" video and the real
+// edge of its container. ResizeObserver reports the element's true size
+// directly, so the card can never undershoot it.
+function useElementSize<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
   const [size, setSize] = useState({ width: 1440, height: 900 });
 
-  useEffect(() => {
-    function update() {
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    }
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setSize({ width: rect.width, height: rect.height });
+      }
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
-  return size;
+  return { ref, size };
 }
 
 function HeroVideo({ className = "" }: { className?: string }) {
@@ -51,7 +66,7 @@ function HeroPinned() {
     target: trackRef,
     offset: ["start start", "end end"],
   });
-  const viewport = useViewportSize();
+  const { ref: stageRef, size: stageSize } = useElementSize<HTMLDivElement>();
 
   // Background: full-bleed dark video that collapses into a small centred
   // square card as the surface itself shifts from dark to light.
@@ -62,13 +77,17 @@ function HeroPinned() {
   // aspect ratio — avoiding the extreme object-cover zoom a 16:9 video
   // gets when forced into a square on a wide/short screen — and only
   // becomes a true square once it has mostly finished shrinking.
-  const finalCard = Math.min(560, Math.max(280, viewport.width * 0.32));
-  const cardWidth = useTransform(scrollYProgress, [0, 0.62], [viewport.width, finalCard]);
-  const cardHeight = useTransform(scrollYProgress, [0, 0.62], [viewport.height, finalCard]);
+  const finalCard = Math.min(560, Math.max(280, stageSize.width * 0.32));
+  const cardWidth = useTransform(scrollYProgress, [0, 0.62], [stageSize.width, finalCard]);
+  const cardHeight = useTransform(scrollYProgress, [0, 0.62], [stageSize.height, finalCard]);
   const cardWidthPx = useTransform(cardWidth, (v) => `${v}px`);
   const cardHeightPx = useTransform(cardHeight, (v) => `${v}px`);
   const cardRadius = useTransform(scrollYProgress, [0, 0.5], [0, 32]);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 0]);
+  // Stays dark through the whole "light text over video" phase — the
+  // video's own content (a bright screen, a white shirt) can't be
+  // trusted to be dark enough on its own for the overlaid headline to
+  // read clearly, so this overlay is the thing guaranteeing contrast.
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.45], [0.6, 0]);
 
   const ghost1WidthPx = useTransform(cardWidth, (v) => `${v + 48}px`);
   const ghost1HeightPx = useTransform(cardHeight, (v) => `${v + 48}px`);
@@ -91,6 +110,14 @@ function HeroPinned() {
     [0.46, 0.47],
     ["#b1b1b1", "#626262"]
   );
+  // A dark shadow while the text sits over the video, so it stays
+  // legible regardless of how bright the footage underneath it is;
+  // dropped once the text itself turns dark on the now-light surface.
+  const headShadow = useTransform(
+    scrollYProgress,
+    [0.46, 0.47],
+    ["0 2px 28px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.7)", "none"]
+  );
 
   const blurbOpacity = useTransform(scrollYProgress, [0.58, 0.85], [0, 1]);
   const blurbY = useTransform(scrollYProgress, [0.58, 0.85], [24, 0]);
@@ -103,11 +130,15 @@ function HeroPinned() {
   return (
     <div ref={trackRef} className="pin-only relative" style={{ height: "260vh" }}>
       <motion.div
+        ref={stageRef}
         className="sticky top-0 h-screen w-full overflow-hidden"
         style={{ backgroundColor: bgColor }}
       >
         {/* card + headline share one centred grid cell so they align perfectly */}
-        <div className="absolute inset-0 grid place-items-center">
+        <div
+          className="absolute inset-0 grid place-items-center"
+          style={{ gridTemplateColumns: "100%", gridTemplateRows: "100%" }}
+        >
           <motion.div
             className="col-start-1 row-start-1 border border-hairline-dark"
             style={{
@@ -132,7 +163,7 @@ function HeroPinned() {
           >
             <HeroVideo />
             <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-ink/50"
+              className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/55"
               style={{ opacity: overlayOpacity }}
             />
           </motion.div>
@@ -140,13 +171,18 @@ function HeroPinned() {
           <div className="col-start-1 row-start-1 flex w-full max-w-5xl flex-col items-center px-6 text-center">
             <motion.span
               className="t-h1 block"
-              style={{ x: headLeftX, color: headColorPrimary }}
+              style={{ x: headLeftX, color: headColorPrimary, textShadow: headShadow }}
             >
               {heroCopy.h1Primary}
             </motion.span>
             <motion.span
               className="t-h1 block"
-              style={{ x: headRightX, color: headColorSoft, marginTop: headGap }}
+              style={{
+                x: headRightX,
+                color: headColorSoft,
+                marginTop: headGap,
+                textShadow: headShadow,
+              }}
             >
               {heroCopy.h1Soft}
             </motion.span>
@@ -187,9 +223,9 @@ function HeroStatic() {
     <div className="pin-hide relative bg-ink text-paper">
       <div className="relative h-[85vh] min-h-[560px] w-full overflow-hidden">
         <HeroVideo />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-ink/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/70" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <HeroHeadline className="text-grey-100" />
+          <HeroHeadline className="text-grey-100 [text-shadow:0_2px_28px_rgba(0,0,0,0.55),0_1px_3px_rgba(0,0,0,0.7)]" />
         </div>
       </div>
       <div className="px-6 py-12 text-center">
