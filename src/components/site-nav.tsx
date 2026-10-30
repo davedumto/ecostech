@@ -29,17 +29,6 @@ export function SiteNav() {
 
   return (
     <>
-      <div className="w-full bg-ink text-paper">
-        <div className="container-ecs flex items-center justify-center gap-2 py-2 text-center">
-          <p className="t-ui text-grey-400">
-            Now enrolling cohorts for the 2026/2027 session
-          </p>
-          <a href="#contact" className="t-ui underline underline-offset-2 hover-rule">
-            Learn more <span className="hover-arrow">&rarr;</span>
-          </a>
-        </div>
-      </div>
-
       <motion.header
         className="sticky top-0 z-50 flex justify-center pt-3 px-4"
         aria-label="Primary"

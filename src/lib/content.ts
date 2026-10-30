@@ -14,8 +14,6 @@ export const navLinks = [
 ];
 
 export const heroCopy = {
-  eyebrowBar:
-    "Now enrolling cohorts for the 2026/2027 session — partner campuses across Nigeria.",
   h1Primary: "Train the ICT Team",
   h1Soft: "You Already Have.",
   scrollLabel: "See how it works",
