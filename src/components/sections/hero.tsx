@@ -37,84 +37,99 @@ function HeroPinned() {
     offset: ["start start", "end end"],
   });
 
-  const videoScale = useTransform(scrollYProgress, [0, 0.62], [1, 0.4]);
-  const videoRadius = useTransform(scrollYProgress, [0, 0.62], [0, 32]);
-  const videoY = useTransform(scrollYProgress, [0, 0.62], ["0%", "-18%"]);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.4], [0.55, 0.15]);
+  // Background: full-bleed dark video that collapses into a small centred
+  // square card as the surface itself shifts from dark to light.
+  const bgColor = useTransform(scrollYProgress, [0.15, 0.5], ["#0a0a0a", "#ffffff"]);
 
-  const ghost1Opacity = useTransform(scrollYProgress, [0.25, 0.5], [0, 0.35]);
-  const ghost2Opacity = useTransform(scrollYProgress, [0.35, 0.6], [0, 0.2]);
+  const cardVmax = useTransform(scrollYProgress, [0, 0.62], [170, 30]);
+  const cardSize = useTransform(cardVmax, (v) => `${v}vmax`);
+  const cardRadius = useTransform(scrollYProgress, [0, 0.5], [0, 32]);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 0]);
 
-  const headLeftX = useTransform(scrollYProgress, [0.05, 0.5], ["0%", "-38%"]);
-  const headRightX = useTransform(scrollYProgress, [0.05, 0.5], ["0%", "38%"]);
-  const headOpacity = useTransform(scrollYProgress, [0.35, 0.58], [1, 0]);
+  const ghost1Size = useTransform(cardVmax, (v) => `${v + 6}vmax`);
+  const ghost2Size = useTransform(cardVmax, (v) => `${v + 11}vmax`);
+  const ghostOpacity = useTransform(scrollYProgress, [0.3, 0.55], [0, 1]);
 
-  const blurbOpacity = useTransform(scrollYProgress, [0.5, 0.78], [0, 1]);
-  const blurbY = useTransform(scrollYProgress, [0.5, 0.78], [24, 0]);
+  const headGap = useTransform(scrollYProgress, [0.1, 0.5], ["0.8em", "0em"]);
+  const headLeftX = useTransform(scrollYProgress, [0.1, 0.6], ["0%", "-32vw"]);
+  const headRightX = useTransform(scrollYProgress, [0.1, 0.6], ["0%", "32vw"]);
+  // Snapped rather than slowly interpolated, so the text never sits at a
+  // low-contrast grey mid-tone against the crossfading background.
+  const headColorPrimary = useTransform(
+    scrollYProgress,
+    [0.46, 0.47],
+    ["#ffffff", "#0a0a0a"]
+  );
+  const headColorSoft = useTransform(
+    scrollYProgress,
+    [0.46, 0.47],
+    ["#b1b1b1", "#626262"]
+  );
 
-  const scrollCueOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const blurbOpacity = useTransform(scrollYProgress, [0.58, 0.85], [0, 1]);
+  const blurbY = useTransform(scrollYProgress, [0.58, 0.85], [24, 0]);
+
+  const scrollCueOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   return (
-    <div ref={trackRef} className="pin-only relative" style={{ height: "230vh" }}>
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-ink text-paper">
-        <motion.div
-          className="absolute inset-0 border border-hairline-dark"
-          style={{ opacity: ghost2Opacity, borderRadius: 32 }}
-        />
-        <motion.div
-          className="absolute inset-0 border border-hairline-dark"
-          style={{ opacity: ghost1Opacity, borderRadius: 32 }}
-        />
-
-        <motion.div
-          className="absolute inset-0 overflow-hidden"
-          style={{
-            scale: videoScale,
-            borderRadius: videoRadius,
-            y: videoY,
-            transformOrigin: "center 20%",
-          }}
-        >
-          <HeroVideo />
+    <div ref={trackRef} className="pin-only relative" style={{ height: "260vh" }}>
+      <motion.div
+        className="sticky top-0 h-screen w-full overflow-hidden"
+        style={{ backgroundColor: bgColor }}
+      >
+        {/* card + headline share one centred grid cell so they align perfectly */}
+        <div className="absolute inset-0 grid place-items-center">
           <motion.div
-            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-ink/60"
-            style={{ opacity: overlayOpacity }}
+            className="col-start-1 row-start-1 border border-hairline-dark"
+            style={{ width: ghost2Size, height: ghost2Size, borderRadius: 32, opacity: ghostOpacity }}
           />
-        </motion.div>
+          <motion.div
+            className="col-start-1 row-start-1 border border-hairline-dark"
+            style={{ width: ghost1Size, height: ghost1Size, borderRadius: 32, opacity: ghostOpacity }}
+          />
+          <motion.div
+            className="col-start-1 row-start-1 relative overflow-hidden"
+            style={{ width: cardSize, height: cardSize, borderRadius: cardRadius }}
+          >
+            <HeroVideo />
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-ink/50"
+              style={{ opacity: overlayOpacity }}
+            />
+          </motion.div>
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <div className="relative w-full max-w-4xl text-balance" aria-hidden="true">
+          <div className="col-start-1 row-start-1 flex w-full max-w-5xl flex-col items-center px-6 text-center">
             <motion.span
               className="t-h1 block"
-              style={{ x: headLeftX, opacity: headOpacity }}
+              style={{ x: headLeftX, color: headColorPrimary }}
             >
               {heroCopy.h1Primary}
             </motion.span>
             <motion.span
-              className="t-h1 mt-[0.8em] block text-grey-400"
-              style={{ x: headRightX, opacity: headOpacity }}
+              className="t-h1 block"
+              style={{ x: headRightX, color: headColorSoft, marginTop: headGap }}
             >
               {heroCopy.h1Soft}
             </motion.span>
           </div>
-
-          <motion.div
-            className="mt-8 max-w-xl"
-            style={{ opacity: blurbOpacity, y: blurbY }}
-          >
-            <p className="t-lead text-grey-400">
-              {heroCopy.blurbTitle} {heroCopy.blurb}
-            </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a href={heroCopy.ctaPrimary.href} className="btn btn-flare">
-                {heroCopy.ctaPrimary.label}
-              </a>
-              <a href={heroCopy.ctaSecondary.href} className="btn btn-glass">
-                {heroCopy.ctaSecondary.label}
-              </a>
-            </div>
-          </motion.div>
         </div>
+
+        <motion.div
+          className="absolute inset-x-0 bottom-[8%] px-6 text-center"
+          style={{ opacity: blurbOpacity, y: blurbY }}
+        >
+          <p className="t-lead mx-auto max-w-xl">
+            {heroCopy.blurbTitle} {heroCopy.blurb}
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <a href={heroCopy.ctaPrimary.href} className="btn btn-flare">
+              {heroCopy.ctaPrimary.label}
+            </a>
+            <a href={heroCopy.ctaSecondary.href} className="btn btn-outline">
+              {heroCopy.ctaSecondary.label}
+            </a>
+          </div>
+        </motion.div>
 
         <motion.a
           href="#problem"
@@ -123,7 +138,7 @@ function HeroPinned() {
         >
           {heroCopy.scrollLabel} &darr;
         </motion.a>
-      </div>
+      </motion.div>
     </div>
   );
 }

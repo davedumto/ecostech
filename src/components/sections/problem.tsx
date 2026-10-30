@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { problemCopy } from "@/lib/content";
-import { MetricChart } from "@/components/ui/metric-chart";
+import { StatCard } from "@/components/ui/stat-card";
 import { Reveal, TwoToneHeading } from "@/components/ui/reveal";
 
 function Legend() {
@@ -19,24 +19,25 @@ function Legend() {
   );
 }
 
-function ChartStack() {
+function StatStack() {
   const { charts } = problemCopy;
   return (
     <div className="grid gap-4">
-      <MetricChart
+      <StatCard
+        size="lg"
         label={charts.turnaround.label}
         before={charts.turnaround.before}
         after={charts.turnaround.after}
         unit={charts.turnaround.unit}
       />
       <div className="grid grid-cols-2 gap-4">
-        <MetricChart
+        <StatCard
           label={charts.inHouse.label}
           before={charts.inHouse.before}
           after={charts.inHouse.after}
           unit={charts.inHouse.unit}
         />
-        <MetricChart
+        <StatCard
           label={charts.staffReady.label}
           before={charts.staffReady.before}
           after={charts.staffReady.after}
@@ -98,7 +99,7 @@ function DashboardShell({ activeIndex }: { activeIndex: number }) {
           See how training works
         </a>
       </div>
-      <ChartStack />
+      <StatStack />
     </div>
   );
 }

@@ -16,8 +16,8 @@ export const navLinks = [
 export const heroCopy = {
   eyebrowBar:
     "Now enrolling cohorts for the 2026/2027 session — partner campuses across Nigeria.",
-  h1Primary: "Every virtual class, every school website, every exam —",
-  h1Soft: "run by the ICT unit you already have.",
+  h1Primary: "Train the ICT Team",
+  h1Soft: "You Already Have.",
   scrollLabel: "See how it works",
   blurbTitle:
     "ECOSTECH trains university ICT staff in the practical skills campuses actually need:",
