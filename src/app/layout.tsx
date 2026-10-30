@@ -26,13 +26,13 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL("https://ecostech.ng"),
   title: {
-    default: "ECOSTECH — ICT Capacity Training for Nigerian Universities",
-    template: "%s — ECOSTECH",
+    default: "ECOSTECH: ICT Capacity Training for Nigerian Universities",
+    template: "%s | ECOSTECH",
   },
   description:
-    "ECOSTECH trains ICT units inside Nigerian federal universities to run virtual lectures, manage their own WordPress site, and schedule CBT exams in-house — hands-on, cohort-based, and built for the realities of campus IT.",
+    "ECOSTECH trains ICT units inside Nigerian federal universities to run virtual lectures, manage their own WordPress site, and schedule CBT exams in-house: hands-on, cohort-based, and built for the realities of campus IT.",
   openGraph: {
-    title: "ECOSTECH — ICT Capacity Training for Nigerian Universities",
+    title: "ECOSTECH: ICT Capacity Training for Nigerian Universities",
     description:
       "Hands-on ICT training for university staff: video & content creation, WordPress for school sites, CBT exam scheduling, and more.",
     url: "https://ecostech.ng",

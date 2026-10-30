@@ -87,7 +87,7 @@ function HeroPinned() {
   // video's own content (a bright screen, a white shirt) can't be
   // trusted to be dark enough on its own for the overlaid headline to
   // read clearly, so this overlay is the thing guaranteeing contrast.
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.45], [0.6, 0]);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.45], [0.72, 0]);
 
   const ghost1WidthPx = useTransform(cardWidth, (v) => `${v + 48}px`);
   const ghost1HeightPx = useTransform(cardHeight, (v) => `${v + 48}px`);
@@ -95,9 +95,13 @@ function HeroPinned() {
   const ghost2HeightPx = useTransform(cardHeight, (v) => `${v + 88}px`);
   const ghostOpacity = useTransform(scrollYProgress, [0.3, 0.55], [0, 1]);
 
-  const headGap = useTransform(scrollYProgress, [0.1, 0.5], ["0.8em", "0em"]);
   const headLeftX = useTransform(scrollYProgress, [0.1, 0.6], ["0%", "-32vw"]);
   const headRightX = useTransform(scrollYProgress, [0.1, 0.6], ["0%", "32vw"]);
+  // Both lines share one grid cell (same technique as the card) so they can
+  // land on the same row once spread apart — but that means they'd overlap
+  // at rest. This keeps the second line sitting directly under the first
+  // one, like an ordinary two-line headline, until the x-spread starts.
+  const headSoftY = useTransform(scrollYProgress, [0.1, 0.35], ["1.15em", "0em"]);
   // Snapped rather than slowly interpolated, so the text never sits at a
   // low-contrast grey mid-tone against the crossfading background.
   const headColorPrimary = useTransform(
@@ -122,10 +126,25 @@ function HeroPinned() {
   const blurbOpacity = useTransform(scrollYProgress, [0.58, 0.85], [0, 1]);
   const blurbY = useTransform(scrollYProgress, [0.58, 0.85], [24, 0]);
   // Anchored to the card's actual bottom edge (not a fixed viewport
-  // percentage) so there's always a clear, consistent gap beneath it.
-  const blurbTop = useTransform(cardHeight, (v) => `calc(50% + ${v / 2}px + 2.5rem)`);
+  // percentage, and computed in real pixels rather than CSS `%` + `calc`)
+  // so there's always a clear, consistent gap beneath it. The desired gap
+  // shrinks — down to a minimum, but never below the card's own bottom
+  // edge — on shorter viewports where the full gap would otherwise push
+  // the CTA buttons past the bottom of the (overflow-hidden) stage.
+  const blurbTop = useTransform(cardHeight, (v) => {
+    const cardBottom = stageSize.height / 2 + v / 2;
+    const desiredGap = 104; // ~6.5rem
+    const minGap = 24;
+    const reservedForContent = 208; // ~13rem for blurb text + CTA buttons
+    const maxTop = stageSize.height - reservedForContent;
+    const top = Math.min(cardBottom + desiredGap, Math.max(maxTop, cardBottom + minGap));
+    return `${top}px`;
+  });
 
   const scrollCueOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  // Keeps the nav legible over whatever the video happens to show up top,
+  // fading out alongside the rest of the dark-video phase.
+  const topShadeOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
 
   return (
     <div ref={trackRef} className="pin-only relative" style={{ height: "260vh" }}>
@@ -134,6 +153,11 @@ function HeroPinned() {
         className="sticky top-0 h-screen w-full overflow-hidden"
         style={{ backgroundColor: bgColor }}
       >
+        <motion.div
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-gradient-to-b from-ink/60 to-transparent"
+          style={{ opacity: topShadeOpacity }}
+        />
+
         {/* card + headline share one centred grid cell so they align perfectly */}
         <div
           className="absolute inset-0 grid place-items-center"
@@ -163,24 +187,27 @@ function HeroPinned() {
           >
             <HeroVideo />
             <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/55"
+              className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/75"
               style={{ opacity: overlayOpacity }}
             />
           </motion.div>
 
-          <div className="col-start-1 row-start-1 flex w-full max-w-5xl flex-col items-center px-6 text-center">
+          <div
+            className="relative z-10 col-start-1 row-start-1 grid w-full max-w-5xl place-items-center px-6 text-center"
+            style={{ gridTemplateColumns: "100%", gridTemplateRows: "100%" }}
+          >
             <motion.span
-              className="t-h1 block"
+              className="col-start-1 row-start-1 t-h1 block"
               style={{ x: headLeftX, color: headColorPrimary, textShadow: headShadow }}
             >
               {heroCopy.h1Primary}
             </motion.span>
             <motion.span
-              className="t-h1 block"
+              className="col-start-1 row-start-1 t-h1 block"
               style={{
                 x: headRightX,
+                y: headSoftY,
                 color: headColorSoft,
-                marginTop: headGap,
                 textShadow: headShadow,
               }}
             >
@@ -224,6 +251,7 @@ function HeroStatic() {
       <div className="relative h-[85vh] min-h-[560px] w-full overflow-hidden">
         <HeroVideo />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/70" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/60 to-transparent" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
           <HeroHeadline className="text-grey-100 [text-shadow:0_2px_28px_rgba(0,0,0,0.55),0_1px_3px_rgba(0,0,0,0.7)]" />
         </div>
@@ -247,7 +275,12 @@ function HeroStatic() {
 
 export function Hero() {
   return (
-    <section id="top" className="relative" aria-label="Introduction">
+    <section
+      id="top"
+      className="relative"
+      style={{ marginTop: "calc(-1 * var(--nav-offset, 0px))" }}
+      aria-label="Introduction"
+    >
       <h1 className="sr-only">
         {heroCopy.h1Primary} {heroCopy.h1Soft}
       </h1>

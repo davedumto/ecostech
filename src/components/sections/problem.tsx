@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { problemCopy } from "@/lib/content";
 import { StatCard } from "@/components/ui/stat-card";
 import { Reveal, TwoToneHeading } from "@/components/ui/reveal";
@@ -30,7 +30,7 @@ function StatStack() {
         after={charts.turnaround.after}
         unit={charts.turnaround.unit}
       />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
         <StatCard
           label={charts.inHouse.label}
           before={charts.inHouse.before}
@@ -104,46 +104,13 @@ function DashboardShell({ activeIndex }: { activeIndex: number }) {
   );
 }
 
-function ProblemPinned() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ["start start", "end end"],
-  });
-
-  const [activeIndex, setActiveIndex] = useState(0);
-  const barProgress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v < 0.34) setActiveIndex(0);
-    else if (v < 0.68) setActiveIndex(1);
-    else setActiveIndex(2);
-  });
-
-  return (
-    <div ref={trackRef} className="pin-only relative" style={{ height: "280vh" }}>
-      <div className="sticky top-24 surface-grey">
-        <div className="container-ecs">
-          <DashboardShell activeIndex={activeIndex} />
-          <div className="mt-4 flex items-center justify-end gap-3">
-            <span className="t-label text-soft">Scroll</span>
-            <div className="h-1 w-32 overflow-hidden rounded-full bg-grey-200">
-              <motion.div
-                className="h-full bg-ink"
-                style={{ width: barProgress }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProblemStatic() {
+// A click-driven accordion instead of the scroll-jacked, pinned version
+// this used to be — same interactive demo (click a stage to see its
+// numbers), without hijacking the page's scroll to drive it.
+function ProblemInteractive() {
   const [activeIndex, setActiveIndex] = useState(1);
   return (
-    <div className="pin-hide container-ecs">
+    <div className="container-ecs">
       <div className="flex flex-wrap gap-4 justify-center mb-6">
         {problemCopy.accordion.map((row, i) => (
           <button
@@ -183,12 +150,7 @@ export function Problem() {
       </div>
 
       <div className="mt-16">
-        <ProblemPinned />
-        <ProblemStatic />
-      </div>
-
-      <div className="container-ecs">
-        <p className="t-mono text-soft mt-6">{problemCopy.disclaimer}</p>
+        <ProblemInteractive />
       </div>
     </section>
   );

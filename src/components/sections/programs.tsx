@@ -49,7 +49,7 @@ export function Programs() {
   );
 
   return (
-    <section id="programs" className="surface-light section" aria-label="What we teach">
+    <section id="programs" className="surface-grey section" aria-label="What we teach">
       <div className="container-ecs">
         <Reveal>
           <span className="eyebrow">{programsCopy.eyebrow}</span>

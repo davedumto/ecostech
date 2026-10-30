@@ -3,7 +3,7 @@ export const site = {
   tagline: "ICT capacity training for Nigerian university campuses",
   email: "hello@ecostech.ng",
   phone: "+234 801 234 5678",
-  location: "Lagos, Nigeria — cohorts hosted on partner campuses nationwide",
+  location: "Enugu, Nigeria, cohorts hosted on partner campuses nationwide",
 };
 
 export const navLinks = [
@@ -20,7 +20,7 @@ export const heroCopy = {
   blurbTitle:
     "ECOSTECH trains university ICT staff in the practical skills campuses actually need:",
   blurb:
-    "video and content production for virtual lectures, WordPress site management, and CBT exam scheduling — hands-on, cohort-based, delivered on your own equipment, so the work stays in-house after we leave.",
+    "video and content production for virtual lectures, WordPress site management, and CBT exam scheduling: hands-on, cohort-based, delivered on your own equipment, so the work stays in-house after we leave.",
   ctaPrimary: { label: "How it works", href: "#how-it-works" },
   ctaSecondary: { label: "View our programs", href: "#programs" },
 };
@@ -32,9 +32,9 @@ export const problemCopy = {
     { text: "does not build a department.", tone: "soft" as const },
   ],
   columnOne:
-    "Most university ICT units can keep the network running, but video editing, website updates and exam-day logistics routinely get pushed out to a vendor, a favourite final-year student, or whoever happens to be free. It works — until that person is unavailable, travelling, or the invoice is overdue.",
+    "Most university ICT units can keep the network running, but video editing, website updates and exam-day logistics routinely get pushed out to a vendor, a favourite final-year student, or whoever happens to be free. It works, until that person is unavailable, travelling, or the invoice is overdue.",
   columnTwo:
-    "Training the unit once removes the bottleneck for good. The same staff who already hold campus access, login credentials and institutional knowledge start handling the requests that used to leave the university — with no new hires and no new vendor contract.",
+    "Training the unit once removes the bottleneck for good. The same staff who already hold campus access, login credentials and institutional knowledge start handling the requests that used to leave the university, with no new hires and no new vendor contract.",
   legend: [
     { code: "A", label: "ICT & network officers" },
     { code: "B", label: "Media & content staff" },
@@ -55,12 +55,12 @@ export const problemCopy = {
     {
       title: "After a 6-week cohort",
       value: 10,
-      body: "Only 10% of requests still need outside help — the edge cases. Average turnaround drops to about 2 working days, and every trained staff member can cover for another.",
+      body: "Only 10% of requests still need outside help: the edge cases. Average turnaround drops to about 2 working days, and every trained staff member can cover for another.",
     },
     {
       title: "Who sits in a cohort",
       value: null,
-      body: "Cohorts mix ICT & network officers, media and content staff, and web or exams admins — 8 to 15 people drawn from across the unit, not one department.",
+      body: "Cohorts mix ICT & network officers, media and content staff, and web or exams admins, 8 to 15 people drawn from across the unit, not one department.",
     },
   ],
   charts: {
@@ -109,7 +109,7 @@ export const stepsCopy = {
       verb: "Train",
       role: "STUDIO + CLASSROOM · WEEKS 1–5",
       caption:
-        "Hands-on sessions in video and content production, WordPress, or CBT setup — on your own campus equipment.",
+        "Hands-on sessions in video and content production, WordPress, or CBT setup, on your own campus equipment.",
     },
     {
       number: "04",
@@ -137,7 +137,7 @@ export const programsCopy = {
     { text: "Four of them running now.", tone: "soft" as const },
   ],
   intro:
-    "Every track is built around the systems your university already owns — the smart boards and laptops in the ICT lab, the CBT platform the exams unit already licenses, the WordPress install the website already runs on.",
+    "Every track is built around the systems your university already owns: the smart boards and laptops in the ICT lab, the CBT platform the exams unit already licenses, the WordPress install the website already runs on.",
   filters: [
     { id: "all", label: "All", count: 6 },
     { id: "content", label: "Content & media", count: 3 },
@@ -151,7 +151,7 @@ export const programsCopy = {
       category: "content",
       track: "TRACK · CONTENT-01",
       description:
-        "Record, edit and publish virtual-lecture-ready video — from phone and webcam capture to clean cuts, captions and thumbnails.",
+        "Record, edit and publish virtual-lecture-ready video, from phone and webcam capture to clean cuts, captions and thumbnails.",
     },
     {
       id: "lecture-studio",
@@ -160,7 +160,7 @@ export const programsCopy = {
       category: "content",
       track: "TRACK · CONTENT-02",
       description:
-        "Turn a classroom, office or smart board session into a watchable recorded lecture — lighting, audio and screen capture included.",
+        "Turn a classroom, office or smart board session into a watchable recorded lecture. Lighting, audio and screen capture included.",
     },
     {
       id: "social-comms",
@@ -178,7 +178,7 @@ export const programsCopy = {
       category: "systems",
       track: "TRACK · SYSTEMS-01",
       description:
-        "Manage pages, post updates, handle plugins and basic troubleshooting on the university or faculty website — no developer on call.",
+        "Manage pages, post updates, handle plugins and basic troubleshooting on the university or faculty website. No developer on call.",
     },
     {
       id: "cbt",
@@ -196,7 +196,7 @@ export const programsCopy = {
       category: "systems",
       track: "TRACK · SYSTEMS-03",
       description:
-        "Organise and back up ICT unit records — tickets, assets, exam logs — with one consistent, searchable template.",
+        "Organise and back up ICT unit records (tickets, assets, exam logs) with one consistent, searchable template.",
     },
   ],
 };
@@ -235,11 +235,6 @@ export const builtForCopy = {
   ],
 };
 
-export const manifestoCopy = {
-  words: ["Hands-on by design.", "Built for campus IT.", "Trained in cohorts."],
-  body: "ECOSTECH is not a lecture series. Every session is built around a deliverable a participant can point to afterwards — a published page, a recorded lecture, a scheduled exam. We train in small cohorts, on the university's own equipment, so the capability stays on campus long after the facilitators leave.",
-};
-
 export const trustCopy = {
   eyebrow: "Plain about scope",
   heading: [
@@ -249,7 +244,7 @@ export const trustCopy = {
   cards: [
     {
       title: "Hands-on by design",
-      body: "Every session ends with a real deliverable — a recording, a published page, a mock exam — not a slide deck.",
+      body: "Every session ends with a real deliverable (a recording, a published page, a mock exam), not a slide deck.",
     },
     {
       title: "Cohort-based",
@@ -261,7 +256,7 @@ export const trustCopy = {
     },
     {
       title: "Facilitator-led",
-      body: "A trainer in the room, or live on the call, for every session — never a pre-recorded course alone.",
+      body: "A trainer in the room, or live on the call, for every session. Never a pre-recorded course alone.",
     },
     {
       title: "Honest about scope",
@@ -289,29 +284,6 @@ export const impactCopy = {
   net: { label: "In-house", value: "9 in 10 requests" },
   heading: "Requests that used to leave the university. Now handled inside it.",
   cta: { label: "See a program", href: "#programs" },
-};
-
-export const milestonesCopy = {
-  eyebrow: "Status",
-  heading: "Where ECOSTECH stands.",
-  rows: [
-    {
-      label: "Running today",
-      body: "Content & video, virtual lecture production, WordPress and CBT scheduling tracks are active with partner ICT units.",
-    },
-    {
-      label: "Validated in pilot cohorts",
-      body: "First cohorts have completed training and shipped deliverables — published pages, recorded lectures, mock CBT exams.",
-    },
-    {
-      label: "Expanding",
-      body: "Digital record-keeping and additional systems tracks are in development, alongside onboarding for more campuses.",
-    },
-    {
-      label: "Review status",
-      body: "Figures on this page describe training design and pilot outcomes, not independently audited results.",
-    },
-  ],
 };
 
 export const resourcesCopy = {
@@ -359,7 +331,3 @@ export const closingCopy = {
   ctaSecondary: { label: "Request the curriculum overview", href: "mailto:hello@ecostech.ng" },
 };
 
-export const footerCopy = {
-  disclaimer:
-    "ECOSTECH is an independent ICT capacity-building provider working with Nigerian federal university ICT units. ECOSTECH is not an accredited degree-awarding institution, a staffing agency, or a replacement for your institution's ICT department, and outcomes vary by cohort and institutional support. Figures referenced on this site describe illustrative training outcomes from pilot cohorts, not independently audited results.",
-};

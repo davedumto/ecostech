@@ -49,6 +49,12 @@
 
 :root {
   color-scheme: light;
+  /* Static estimate of the promo-bar + nav height, so the very first paint
+     (before JS has measured the real value via ResizeObserver) already
+     pulls the hero up behind the nav instead of rendering it below a
+     flash of white page background. JS corrects this to the exact value
+     immediately after mount. */
+  --nav-offset: 8rem;
 }
 
 * {
@@ -71,6 +77,14 @@ body {
   background: var(--color-flare);
   color: var(--color-paper);
 }
+
+/* Hand-written component classes must live in an explicit cascade layer —
+   Tailwind v4 emits its own utilities (hidden, lg:hidden, etc.) inside
+   layers, and unlayered CSS always wins over layered CSS regardless of
+   source order or specificity. Without this, .btn's `display: inline-flex`
+   silently beat `lg:hidden`, so the mobile Menu button and the desktop
+   "Book a training" button rendered at the same time on every viewport. */
+@layer components {
 
 /* ---------------- surfaces ---------------- */
 
@@ -463,3 +477,5 @@ body {
     var(--color-signal) 100%
   );
 }
+
+} /* @layer components */

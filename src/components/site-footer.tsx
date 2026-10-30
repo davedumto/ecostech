@@ -1,4 +1,4 @@
-import { footerCopy, navLinks, site } from "@/lib/content";
+import { navLinks, site } from "@/lib/content";
 
 export function SiteFooter() {
   return (
@@ -7,7 +7,7 @@ export function SiteFooter() {
         <div className="flex flex-col gap-10 pb-10 rule-top pt-10 lg:flex-row lg:justify-between">
           <div className="max-w-sm">
             <span className="t-h4">
-              eco<span style={{ color: "var(--color-flare)" }}>tech</span>
+              eco<span style={{ color: "var(--color-flare)" }}>stech</span>
             </span>
             <p className="t-body mt-3">{site.tagline}</p>
           </div>
@@ -53,8 +53,7 @@ export function SiteFooter() {
         </div>
 
         <div className="rule-top pt-6">
-          <p className="t-mono text-soft max-w-3xl">{footerCopy.disclaimer}</p>
-          <p className="t-ui text-soft mt-6">
+          <p className="t-ui text-soft">
             &copy; 2026 ECOSTECH. All rights reserved.
           </p>
         </div>

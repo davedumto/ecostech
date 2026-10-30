@@ -14,7 +14,7 @@ const tiles = [
   {
     kind: "image" as const,
     src: "/images/trainee-focused.jpg",
-    caption: "Focused, hands-on — not a lecture to sit through.",
+    caption: "Focused, hands-on, not a lecture to sit through.",
     span: "",
   },
   {
@@ -33,7 +33,7 @@ const tiles = [
 
 export function Gallery() {
   return (
-    <section className="surface-light section !pt-0" aria-label="Inside a cohort">
+    <section className="surface-light section" aria-label="Inside a cohort">
       <div className="container-ecs">
         <Reveal>
           <span className="eyebrow">In the room</span>

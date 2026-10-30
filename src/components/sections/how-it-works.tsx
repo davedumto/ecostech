@@ -55,7 +55,7 @@ export function HowItWorks() {
   }
 
   return (
-    <section id="how-it-works" className="surface-grey section" aria-label="How it works">
+    <section id="how-it-works" className="surface-light section" aria-label="How it works">
       <div className="container-ecs">
         <Reveal>
           <span className="eyebrow">{stepsCopy.eyebrow}</span>
@@ -64,17 +64,17 @@ export function HowItWorks() {
       </div>
 
       <Reveal delay={0.05}>
-        <div className="relative mt-10">
+        <div className="container-ecs relative mt-10">
           <div
             ref={trackRef}
-            className="no-scrollbar flex gap-4 overflow-x-auto scroll-smooth px-6 pb-4 snap-x snap-mandatory lg:px-[calc((100vw-76rem)/2+1.5rem)]"
+            className="no-scrollbar flex gap-4 overflow-x-auto scroll-smooth pb-4 snap-x snap-mandatory"
             role="group"
             aria-label="Training process, five steps"
           >
             {stepsCopy.steps.map((step, i) => (
               <article
                 key={step.verb}
-                className="surface-dark relative flex h-[26rem] w-[82vw] shrink-0 snap-start flex-col justify-between rounded-[var(--radius-card)] p-6 sm:w-[21rem]"
+                className="surface-dark relative flex h-[26rem] w-[82vw] shrink-0 snap-start flex-col justify-between rounded-[var(--radius-card)] p-6 sm:w-[17rem]"
                 role="group"
                 aria-label={`${i + 1} of ${total}`}
               >
@@ -92,7 +92,7 @@ export function HowItWorks() {
                     backgroundImage:
                       "radial-gradient(circle at 20% 20%, rgba(226,89,12,0.5), transparent 55%)",
                   }} />
-                  <p className="t-mono text-grey-400 relative">{step.caption}</p>
+                  <p className="t-mono text-grey-200 relative">{step.caption}</p>
                 </div>
               </article>
             ))}

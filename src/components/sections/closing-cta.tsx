@@ -5,7 +5,7 @@ import { Reveal } from "@/components/ui/reveal";
 
 export function ClosingCta() {
   return (
-    <section id="contact" className="surface-light section" aria-label="Get in touch">
+    <section id="contact" className="surface-grey section" aria-label="Get in touch">
       <div className="container-ecs text-center">
         <Reveal>
           <h2 className="t-h1 mx-auto max-w-3xl text-balance">{closingCopy.heading}</h2>

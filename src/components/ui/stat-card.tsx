@@ -12,8 +12,8 @@ export function StatCard({
   size?: "md" | "lg";
 }) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-[var(--radius-card)] bg-paper p-6">
-      <div className="flex items-start justify-between gap-2">
+    <div className="flex h-full min-w-0 flex-col justify-between rounded-[var(--radius-card)] bg-paper p-6">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <p className="t-ui">{label}</p>
         <span className="value-tag whitespace-nowrap">Illustrative</span>
       </div>
