@@ -1,8 +1,23 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { heroCopy } from "@/lib/content";
+
+function useViewportSize() {
+  const [size, setSize] = useState({ width: 1440, height: 900 });
+
+  useEffect(() => {
+    function update() {
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return size;
+}
 
 function HeroVideo({ className = "" }: { className?: string }) {
   return (
@@ -36,18 +51,29 @@ function HeroPinned() {
     target: trackRef,
     offset: ["start start", "end end"],
   });
+  const viewport = useViewportSize();
 
   // Background: full-bleed dark video that collapses into a small centred
   // square card as the surface itself shifts from dark to light.
   const bgColor = useTransform(scrollYProgress, [0.15, 0.5], ["#0a0a0a", "#ffffff"]);
 
-  const cardVmax = useTransform(scrollYProgress, [0, 0.62], [170, 30]);
-  const cardSize = useTransform(cardVmax, (v) => `${v}vmax`);
+  // Width and height are tracked independently (in real pixels, not a
+  // single "vmax" size) so the box starts matching the viewport's own
+  // aspect ratio — avoiding the extreme object-cover zoom a 16:9 video
+  // gets when forced into a square on a wide/short screen — and only
+  // becomes a true square once it has mostly finished shrinking.
+  const finalCard = Math.min(560, Math.max(280, viewport.width * 0.32));
+  const cardWidth = useTransform(scrollYProgress, [0, 0.62], [viewport.width, finalCard]);
+  const cardHeight = useTransform(scrollYProgress, [0, 0.62], [viewport.height, finalCard]);
+  const cardWidthPx = useTransform(cardWidth, (v) => `${v}px`);
+  const cardHeightPx = useTransform(cardHeight, (v) => `${v}px`);
   const cardRadius = useTransform(scrollYProgress, [0, 0.5], [0, 32]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 0]);
 
-  const ghost1Size = useTransform(cardVmax, (v) => `${v + 6}vmax`);
-  const ghost2Size = useTransform(cardVmax, (v) => `${v + 11}vmax`);
+  const ghost1WidthPx = useTransform(cardWidth, (v) => `${v + 48}px`);
+  const ghost1HeightPx = useTransform(cardHeight, (v) => `${v + 48}px`);
+  const ghost2WidthPx = useTransform(cardWidth, (v) => `${v + 88}px`);
+  const ghost2HeightPx = useTransform(cardHeight, (v) => `${v + 88}px`);
   const ghostOpacity = useTransform(scrollYProgress, [0.3, 0.55], [0, 1]);
 
   const headGap = useTransform(scrollYProgress, [0.1, 0.5], ["0.8em", "0em"]);
@@ -70,7 +96,7 @@ function HeroPinned() {
   const blurbY = useTransform(scrollYProgress, [0.58, 0.85], [24, 0]);
   // Anchored to the card's actual bottom edge (not a fixed viewport
   // percentage) so there's always a clear, consistent gap beneath it.
-  const blurbTop = useTransform(cardVmax, (v) => `calc(50% + ${v / 2}vmax + 2.5rem)`);
+  const blurbTop = useTransform(cardHeight, (v) => `calc(50% + ${v / 2}px + 2.5rem)`);
 
   const scrollCueOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
@@ -84,15 +110,25 @@ function HeroPinned() {
         <div className="absolute inset-0 grid place-items-center">
           <motion.div
             className="col-start-1 row-start-1 border border-hairline-dark"
-            style={{ width: ghost2Size, height: ghost2Size, borderRadius: 32, opacity: ghostOpacity }}
+            style={{
+              width: ghost2WidthPx,
+              height: ghost2HeightPx,
+              borderRadius: 32,
+              opacity: ghostOpacity,
+            }}
           />
           <motion.div
             className="col-start-1 row-start-1 border border-hairline-dark"
-            style={{ width: ghost1Size, height: ghost1Size, borderRadius: 32, opacity: ghostOpacity }}
+            style={{
+              width: ghost1WidthPx,
+              height: ghost1HeightPx,
+              borderRadius: 32,
+              opacity: ghostOpacity,
+            }}
           />
           <motion.div
             className="col-start-1 row-start-1 relative overflow-hidden"
-            style={{ width: cardSize, height: cardSize, borderRadius: cardRadius }}
+            style={{ width: cardWidthPx, height: cardHeightPx, borderRadius: cardRadius }}
           >
             <HeroVideo />
             <motion.div
