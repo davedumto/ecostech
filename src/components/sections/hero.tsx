@@ -68,6 +68,9 @@ function HeroPinned() {
 
   const blurbOpacity = useTransform(scrollYProgress, [0.58, 0.85], [0, 1]);
   const blurbY = useTransform(scrollYProgress, [0.58, 0.85], [24, 0]);
+  // Anchored to the card's actual bottom edge (not a fixed viewport
+  // percentage) so there's always a clear, consistent gap beneath it.
+  const blurbTop = useTransform(cardVmax, (v) => `calc(50% + ${v / 2}vmax + 2.5rem)`);
 
   const scrollCueOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
@@ -115,8 +118,8 @@ function HeroPinned() {
         </div>
 
         <motion.div
-          className="absolute inset-x-0 bottom-[8%] px-6 text-center"
-          style={{ opacity: blurbOpacity, y: blurbY }}
+          className="absolute inset-x-0 px-6 text-center"
+          style={{ top: blurbTop, opacity: blurbOpacity, y: blurbY }}
         >
           <p className="t-lead mx-auto max-w-xl">
             {heroCopy.blurbTitle} {heroCopy.blurb}
