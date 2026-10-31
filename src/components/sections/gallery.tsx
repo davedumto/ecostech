@@ -41,7 +41,7 @@ export function Gallery() {
         </Reveal>
 
         <Reveal delay={0.05}>
-          <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:grid-rows-2">
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
             {tiles.map((tile) => (
               <figure
                 key={tile.caption}
@@ -49,7 +49,7 @@ export function Gallery() {
               >
                 {tile.kind === "video" ? (
                   <video
-                    className="h-56 w-full object-cover lg:h-full lg:min-h-[22rem]"
+                    className="h-72 w-full object-cover sm:h-56 lg:h-full lg:min-h-[22rem]"
                     autoPlay
                     muted
                     loop
@@ -64,10 +64,10 @@ export function Gallery() {
                     alt=""
                     width={800}
                     height={560}
-                    className="h-56 w-full object-cover lg:h-full"
+                    className="h-72 w-full object-cover sm:h-56 lg:h-full"
                   />
                 )}
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent p-4 pt-10 text-paper">
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent p-4 pt-12 text-paper">
                   <span className="t-ui">{tile.caption}</span>
                 </figcaption>
               </figure>

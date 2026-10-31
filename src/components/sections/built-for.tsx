@@ -192,11 +192,15 @@ function BuiltForStatic() {
     // utilities always beat @layer components rules, media query or not
     // — so the flex layout goes on an inner wrapper instead.
     <div className="pin-hide">
-      <div className="flex flex-col gap-4">
+      <div
+        className="no-scrollbar flex gap-4 overflow-x-auto scroll-smooth pb-4 snap-x snap-mandatory"
+        role="group"
+        aria-label="Why ECOSTECH fits, four reasons"
+      >
         {builtForCopy.cards.map((card, i) => (
           <div
             key={card.title}
-            className="rounded-[var(--radius-card)] bg-paper p-6 shadow-[0_4px_32px_rgba(0,0,0,0.08)]"
+            className="w-[78vw] shrink-0 snap-start rounded-[var(--radius-card)] bg-paper p-6 shadow-[0_4px_32px_rgba(0,0,0,0.08)] sm:w-[20rem]"
           >
             <div className="flex items-start justify-between gap-4">
               <span className="t-ui text-grey-400">{card.number}</span>

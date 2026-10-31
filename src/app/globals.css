@@ -217,8 +217,8 @@ body {
 /* ---------------- shape / layout helpers ---------------- */
 
 .section {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 @media (min-width: 64rem) {

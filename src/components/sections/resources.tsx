@@ -1,10 +1,23 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { resourcesCopy } from "@/lib/content";
 import { Reveal } from "@/components/ui/reveal";
 
 export function Resources() {
   const [featured, ...rest] = resourcesCopy.cards;
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const total = rest.length;
+
+  function go(delta: number) {
+    const next = Math.min(Math.max(index + delta, 0), total - 1);
+    setIndex(next);
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.children[next] as HTMLElement | undefined;
+    card?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  }
 
   return (
     <section className="surface-light section" aria-label="Resources">
@@ -42,21 +55,56 @@ export function Resources() {
             </a>
           </Reveal>
 
-          {rest.map((card, i) => (
-            <Reveal key={card.title} delay={i * 0.05}>
-              <a
-                href={card.href}
-                className="hover-rule block rounded-[var(--radius-card)] border border-grey-200 p-6 h-full"
+          <div
+            ref={trackRef}
+            className="no-scrollbar col-span-full flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth lg:col-span-1 lg:contents lg:overflow-visible"
+          >
+            {rest.map((card, i) => (
+              <Reveal
+                key={card.title}
+                delay={i * 0.05}
+                className="w-full shrink-0 snap-start lg:w-auto lg:shrink"
               >
-                <div className="flex items-start justify-between">
-                  <p className="t-mono text-soft">{card.meta}</p>
-                  <span className="hover-arrow t-ui">&rarr;</span>
-                </div>
-                <h3 className="t-h4 mt-3">{card.title}</h3>
-                <p className="t-body mt-2">{card.summary}</p>
-              </a>
-            </Reveal>
-          ))}
+                <a
+                  href={card.href}
+                  className="hover-rule block h-full rounded-[var(--radius-card)] border border-grey-200 p-5 lg:p-6"
+                >
+                  <div className="flex items-start justify-between">
+                    <p className="t-mono text-soft">{card.meta}</p>
+                    <span className="hover-arrow t-ui">&rarr;</span>
+                  </div>
+                  <h3 className="t-h4 mt-3">{card.title}</h3>
+                  <p className="t-body mt-2">{card.summary}</p>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between lg:hidden">
+          <p className="t-ui text-soft">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="btn btn-light"
+              onClick={() => go(-1)}
+              disabled={index === 0}
+              aria-label="Previous resource"
+            >
+              &larr;
+            </button>
+            <button
+              type="button"
+              className="btn btn-dark"
+              onClick={() => go(1)}
+              disabled={index === total - 1}
+              aria-label="Next resource"
+            >
+              &rarr;
+            </button>
+          </div>
         </div>
       </div>
     </section>

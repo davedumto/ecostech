@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { programsCopy } from "@/lib/content";
 import { Reveal, TwoToneHeading } from "@/components/ui/reveal";
@@ -47,6 +47,23 @@ export function Programs() {
   const visible = programsCopy.programs.filter(
     (p) => filter === "all" || p.category === filter
   );
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const total = visible.length;
+
+  useEffect(() => {
+    setIndex(0);
+    trackRef.current?.scrollTo({ left: 0 });
+  }, [filter]);
+
+  function go(delta: number) {
+    const next = Math.min(Math.max(index + delta, 0), total - 1);
+    setIndex(next);
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.children[next] as HTMLElement | undefined;
+    card?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  }
 
   return (
     <section id="programs" className="surface-grey section" aria-label="What we teach">
@@ -88,7 +105,17 @@ export function Programs() {
         </Reveal>
 
         <div className="shell mt-6">
-          <motion.div layout className="grid gap-4 sm:grid-cols-2">
+          <motion.div
+            layout
+            ref={trackRef}
+            onScroll={(e) => {
+              const track = e.currentTarget;
+              if (window.innerWidth >= 640) return;
+              const next = Math.round(track.scrollLeft / track.clientWidth);
+              setIndex(Math.min(Math.max(next, 0), total - 1));
+            }}
+            className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible"
+          >
             <AnimatePresence mode="popLayout">
               {visible.map((program) => (
                 <motion.article
@@ -98,7 +125,7 @@ export function Programs() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  className="rounded-[var(--radius-card)] p-6"
+                  className="w-full shrink-0 snap-start rounded-[var(--radius-card)] p-5 sm:w-auto sm:shrink sm:p-6"
                   style={{
                     background: program.status === "live" ? "var(--color-paper)" : "var(--color-grey-150)",
                   }}
@@ -126,6 +153,32 @@ export function Programs() {
               ))}
             </AnimatePresence>
           </motion.div>
+
+          <div className="mt-4 flex items-center justify-between sm:hidden">
+            <p className="t-ui text-soft">
+              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="btn btn-light"
+                onClick={() => go(-1)}
+                disabled={index === 0}
+                aria-label="Previous program"
+              >
+                &larr;
+              </button>
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={() => go(1)}
+                disabled={index === total - 1}
+                aria-label="Next program"
+              >
+                &rarr;
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

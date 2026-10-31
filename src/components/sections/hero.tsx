@@ -248,7 +248,7 @@ function HeroPinned() {
 function HeroStatic() {
   return (
     <div className="pin-hide relative bg-ink text-paper">
-      <div className="relative h-[85vh] min-h-[560px] w-full overflow-hidden">
+      <div className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
         <HeroVideo />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/70" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/60 to-transparent" />
